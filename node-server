@@ -1,0 +1,23 @@
+var http = require("http");
+var url = require("url");
+var fs = require("fs");
+
+http.createServer(function(req, res) {
+    // 获取输入地址名称
+    var pathname = url.parse(req.url).pathname;
+    console.log(pathname); // 如果地址中输入 localhost:5000/index.html那么打印 /index.html
+    // 读取文件
+    // 去掉/indexhtml中的"/" substr(开始, 长度)第二个参数省略就是到结尾, 从0开始
+    fs.readFile(pathname.substr(1), function(err, data) {
+        if(err) {
+            console.log(err);
+            res.writeHead(404, {"Content-Type": "text/html"});
+        }
+        else {
+            res.writeHead(200, {"Content-Type": "text/html"});
+            // 数据转换成字符串, 可不带参数, 默认utf-8
+            res.write(data.toString("UTF-8"));
+        }
+        res.end();
+    });
+}).listen(5000);
